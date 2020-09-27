@@ -8,32 +8,36 @@ class ProgressContainerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
       alignment: Alignment.topCenter,
-      child:  Stack(
+      child:  Column(
         children: [
-          /* TODO: Top bar alignment*/
+          /* Top bar */
           Container(
             color: Colors.blueAccent,
             padding: EdgeInsets.all(0),
-            height: MediaQuery.of(context).size.height/3.25,
+            margin: EdgeInsets.only(bottom: 10),
+            height: MediaQuery.of(context).size.height/4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // share and edit profile button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(CustomIcons.profile, color: Colors.white),
-                      padding: EdgeInsets.only(bottom: 0),
-                      onPressed: () {},
-                    ),
-                    IconButton(
+                Container(
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: Icon(CustomIcons.profile, color: Colors.white),
+                        padding: EdgeInsets.only(bottom: 0),
+                        onPressed: () {},
+                      ),
+                      IconButton(
                         icon: Icon(CustomIcons.share, color: Colors.white,),
                         padding: EdgeInsets.only(bottom: 0),
                         onPressed: () {},
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
                 // days counter display
                 Container(
@@ -48,10 +52,11 @@ class ProgressContainerScreen extends StatelessWidget {
                 ),
                 // I smoked button
                 Container(
+                  margin: EdgeInsets.only(top: 10),
                   height: 43,
-                  alignment: Alignment.bottomCenter,
-                  color: Colors.redAccent,
                   child: FlatButton(
+                    color: Colors.redAccent,
+                    padding: EdgeInsets.all(0),
                     onPressed: (){},
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -62,14 +67,42 @@ class ProgressContainerScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                /*TODO: Progress report */
-
               ],
             ),
           ),
+
+          /* TODO: Progress list...add scroll mechanism */
+          progressList(CustomIcons.money, 'Money Saved', 'RM 22'),
+          progressList(CustomIcons.cigareette, 'Non-Smoked Cigarettes', '22'),
+          progressList(Icons.timeline, 'Life Regained', '10 Days'),
+          progressList(CustomIcons.relapsed, 'Relapsed', '3'),
         ],
       ),
     );
 
   }
+
+  Widget progressList(IconData icon, String title, String number){
+    return ListTile(
+      leading: Stack(
+        alignment: Alignment.center,
+        children: [
+          circle,
+          Icon(icon, color: Colors.grey[600]),
+        ],
+      ),
+      title: Text(title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),),
+      trailing: Text(number, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.lightGreen),textAlign: TextAlign.end,),
+    );
+  }
+
+  Widget circle = new Container(
+    width: 45,
+    height: 45,
+    decoration: new BoxDecoration(
+      color: Colors.grey[350],
+      shape: BoxShape.circle,
+    ),
+  );
+
 }

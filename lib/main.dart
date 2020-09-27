@@ -50,7 +50,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const TextStyle textStyle = TextStyle(fontSize: 13.0);
+    const TextStyle textStyle = TextStyle(fontSize: 11.0); // text style for bottom nav bar for texts
     return SafeArea(
       child: Scaffold(
         body: Center(
