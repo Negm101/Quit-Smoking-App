@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:circular_check_box/circular_check_box.dart';
-import 'package:quit_smoking_app/custom_icons.dart';
 
 class MissionsContainerScreen extends StatefulWidget {
   const MissionsContainerScreen({Key key}) : super(key: key);

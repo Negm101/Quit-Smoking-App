@@ -6,6 +6,7 @@ class TipsContainerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(), //change scroll physics bouncy
       child: new Column(
         children: [
           singleTip(),

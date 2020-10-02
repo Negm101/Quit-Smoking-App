@@ -8,74 +8,85 @@ class ProgressContainerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
       alignment: Alignment.topCenter,
-      child:  Column(
+      child:  Stack(
         children: [
-          /* Top bar */
           Container(
-            color: Colors.blueAccent,
-            padding: EdgeInsets.all(0),
-            margin: EdgeInsets.only(bottom: 10),
-            height: MediaQuery.of(context).size.height/4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/4),
+            height:MediaQuery.of(context).size.height/2,
+            child: ListView(
+              physics: BouncingScrollPhysics(),
               children: [
-                // share and edit profile button
-                Container(
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(CustomIcons.profile, color: Colors.white),
-                        padding: EdgeInsets.only(bottom: 0),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: Icon(CustomIcons.share, color: Colors.white,),
-                        padding: EdgeInsets.only(bottom: 0),
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
-                ),
-                // days counter display
-                Container(
-                  alignment: Alignment.topCenter,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('20 Days', style: TextStyle(fontSize: 45, color: Colors.white),),
-                      Text('Since Your Last Cigarette', style: TextStyle(fontSize: 16, color: Colors.white54),),
-                  ],),
-                ),
-                // I smoked button
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  height: 43,
-                  child: FlatButton(
-                    color: Colors.redAccent,
-                    padding: EdgeInsets.all(0),
-                    onPressed: (){},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.refresh,color: Colors.white,size: 22,),
-                        Text(' I SMOKED', style: TextStyle(fontSize: 16, color: Colors.white),),
-                      ],
-                    ),
-                  ),
-                ),
+                progressList(CustomIcons.money, 'Money Saved', 'RM 22'),
+                progressList(CustomIcons.cigareette, 'Non-Smoked Cigarettes', '22'),
+                progressList(Icons.timeline, 'Life Regained', '10 Days'),
+                progressList(CustomIcons.relapsed, 'Relapsed', '3'),
               ],
             ),
           ),
+          Column(
+            children: [
+              /* Top bar */
+              Container(
+                color: Colors.blueAccent,
+                padding: EdgeInsets.all(0),
+                margin: EdgeInsets.only(bottom: 10),
+                height: MediaQuery.of(context).size.height/4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // share and edit profile button
+                    Container(
 
-          /* TODO: Progress list...add scroll mechanism */
-          progressList(CustomIcons.money, 'Money Saved', 'RM 22'),
-          progressList(CustomIcons.cigareette, 'Non-Smoked Cigarettes', '22'),
-          progressList(Icons.timeline, 'Life Regained', '10 Days'),
-          progressList(CustomIcons.relapsed, 'Relapsed', '3'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(CustomIcons.profile, color: Colors.white),
+                            padding: EdgeInsets.only(bottom: 0),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(CustomIcons.share, color: Colors.white,),
+                            padding: EdgeInsets.only(bottom: 0),
+                            onPressed: () {},
+                          )
+                        ],
+                      ),
+                    ),
+                    // days counter display
+                    Container(
+                      alignment: Alignment.topCenter,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('20 Days', style: TextStyle(fontSize: 45, color: Colors.white),),
+                          Text('Since Your Last Cigarette', style: TextStyle(fontSize: 16, color: Colors.white54),),
+                        ],),
+                    ),
+                    // I smoked button
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      height: 43,
+                      child: FlatButton(
+                        color: Colors.redAccent,
+                        padding: EdgeInsets.all(0),
+                        onPressed: (){},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.refresh,color: Colors.white,size: 22,),
+                            Text(' I SMOKED', style: TextStyle(fontSize: 16, color: Colors.white),),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
