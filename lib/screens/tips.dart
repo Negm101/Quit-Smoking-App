@@ -9,18 +9,32 @@ class TipsContainerScreen extends StatelessWidget {
       physics: BouncingScrollPhysics(), //change scroll physics bouncy
       child: new Column(
         children: [
-          singleTip(),
+          singleTip(
+            'Why is quitting so hard?',
+            'We all know the health risks of smoking, but that does not make it any easier to kick the habit. Nicotine is addictive,'
+                ' try to fight the next craving you have, and it will be easier to fight the next and next and next to come until you eventually'
+                ' don\'t need it anymore.',
+            AssetImage('assets/images/tips-1.jpg'),
+            context,
+          ),
           SizedBox(height: 25),
-          singleTip(),
+          singleTip(
+            'Quitting smoking makes me feel uncomfortable...',
+            'Flu, headache, trouble concentrating and more terrible things happening'
+                ' to you ever since you started quiting smoking? What you are experiencing is the'
+                ' withdrawal symptoms from nicotine. Trust me, it\'ll get better over time!',
+            AssetImage('assets/images/tips-2.png'),
+            context,
+          ),
           SizedBox(height: 25),
-          singleTip(),
         ],
       ),
       /* TODO: Start writing tips here */
     );
   }
 
-  Widget singleTip() {
+  Widget singleTip(String tipsTitle, String tipsDescription,
+      AssetImage displayImage, BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -39,7 +53,8 @@ class TipsContainerScreen extends StatelessWidget {
             height: 200.00,
             decoration: new BoxDecoration(
               image: new DecorationImage(
-                image: AssetImage('assets/images/tips-1.jpg'),
+                image: displayImage,
+                // image: AssetImage('assets/images/tips-1.jpg'),
                 fit: BoxFit.cover,
               ),
             )),
@@ -49,12 +64,12 @@ class TipsContainerScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Why is quitting so hard?',
+                tipsTitle,
                 style: TextStyle(fontSize: 30, color: Colors.black),
               ),
               SizedBox(height: 15),
               Text(
-                'We all know the health risks of smoking, but that doesn’t make it any easier to kick the habit....',
+                tipsDescription.substring(0, 100) + '...',
                 style:
                     TextStyle(fontSize: 18, color: Colors.black54, height: 1.3),
               ),
@@ -70,7 +85,24 @@ class TipsContainerScreen extends StatelessWidget {
             ),
             color: Colors.grey,
             padding: EdgeInsets.all(0),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(tipsTitle),
+                      content: Text(tipsDescription),
+                      actions: [
+                        FlatButton(
+                          child: Text("Ok, I won't give up!"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  });
+            },
             child: Text(
               'More',
               style: TextStyle(fontSize: 20, color: Colors.white),
