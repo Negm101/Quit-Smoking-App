@@ -1,95 +1,200 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:circular_check_box/circular_check_box.dart';
+import 'package:quit_smoking_app/custom_icons.dart';
 
-class MissionsContainerScreen extends StatelessWidget {
-  MissionsContainerScreen();
+class MissionsContainerScreen extends StatefulWidget {
+  const MissionsContainerScreen({Key key}) : super(key: key);
+
+  @override
+  _MissionsContainerState createState() => _MissionsContainerState();
+}
+
+class _MissionsContainerState extends State<MissionsContainerScreen> {
+  bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        topBar(context),
+        Container(
+          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 6, bottom: MediaQuery.of(context).size.height/15),
+          child: ListView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              Container(
+                margin: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 25,
+                    bottom: MediaQuery.of(context).size.height / 40,
+                    top: MediaQuery.of(context).size.height / 40),
+                child: Text('Short-term goals',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+              shortTermGoals(context, Colors.yellow, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+              shortTermGoals(context, Colors.red, 'Hey there'),
+            ],
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            topBar(context),
+            bottomBarAddButton(context),
+          ],
+        ),
       ],
     );
-
   }
 
-  Widget topBar(BuildContext context){
+  Widget topBar(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 60),
-      height: MediaQuery.of(context).size.height/6,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          /* Main mission text*/
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Main', style: TextStyle(fontSize: 18),),
-                Text('Mission', style: TextStyle(fontSize: 18),),
-              ],
+        margin: EdgeInsets.only(bottom: 60),
+        height: MediaQuery.of(context).size.height / 6,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
             ),
-          ),
-          /* progress circle */
-          progressCircle(66),
-          /* total days + completed days*/
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('Total 30 days', style: TextStyle(fontSize: 10),),
-                Text('20', style: TextStyle(fontSize: 22, color: Colors.blueAccent, fontWeight: FontWeight.bold),),
-              ],
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            /* Main mission text*/
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Main',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    'Mission',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
             ),
-          ),
-      ],)
-    );
+            /* progress circle */
+            progressCircle(66),
+            /* total days + completed days*/
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Total 30 days',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  Text(
+                    '20',
+                    style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
-  Widget shortTermGoals(BuildContext context, Color priorityColor, String title){
+
+  Widget bottomBarAddButton(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height/10,
       width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height/15,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[100],
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: .1,
             blurRadius: 8,
-            offset: Offset(0, 8), // changes position of shadow
+            offset: Offset(0, -8), // changes position of shadow
           ),
         ],
+      ),
+      child: FlatButton(
+        child: Icon(Icons.add, color: Colors.greenAccent,size: 40,),
       ),
     );
   }
 
-  Widget progressCircle(double percent){
-    int percentPrint =  percent.toInt(); // casts percent to int for display
+  Widget shortTermGoals(
+      BuildContext context, Color priorityColor, String title) {
+    return Container(
+      height: MediaQuery.of(context).size.height / 10,
+      width: MediaQuery.of(context).size.width,
+      child: Container(
+          color: Colors.grey[100],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width / 25,
+                    color: priorityColor,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 30),
+                    child: Text(title,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                  )
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.only(right: 10),
+                child: CircularCheckBox(
+                  value: _isChecked,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _isChecked = value;
+                    });
+                  },
+                ),
+              )
+            ],
+          )),
+    );
+  }
+
+  Widget progressCircle(double percent) {
+    int percentPrint = percent.toInt(); // casts percent to int for display
     return CircularPercentIndicator(
       circularStrokeCap: CircularStrokeCap.round,
       radius: 80.0,
       lineWidth: 8.0,
-      percent: percent/100,
-      //animation: true,
-      //animationDuration: 750,
-      center: new Text('$percentPrint%', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+      percent: percent / 100,
+      animation: true,
+      animationDuration: 800,
+      center: new Text(
+        '$percentPrint%',
+        style: TextStyle(fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
+      ),
       progressColor: Colors.blueAccent,
     );
   }
-
 }
