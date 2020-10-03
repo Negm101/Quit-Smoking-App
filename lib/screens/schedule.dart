@@ -8,21 +8,51 @@ class ScheduleContainerScreen extends StatefulWidget {
 }
 
 class _ScheduleContainerState extends State<ScheduleContainerScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
+
+        ListView(
+          physics: BouncingScrollPhysics(),
+          children: [
+            Divider(
+              height: MediaQuery.of(context).size.height/12,
+              color: Colors.transparent,
+            ),
+            listItem(context),
+            Divider(
+              color: Colors.grey,
+              indent: 20,
+              endIndent: 20,
+            ),
+            listItem(context),
+            Divider(
+              color: Colors.grey,
+              indent: 20,
+              endIndent: 20,
+            ),
+            listItem(context),
+            Divider(
+              color: Colors.grey,
+              indent: 20,
+              endIndent: 20,
+            ),
+            listItem(context),
+            Divider(
+              height: MediaQuery.of(context).size.height/12,
+              color: Colors.transparent,
+            ),
+          ],
+        ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            topBar(context),
-            bottomBarAddButton(context)
-          ],
+          children: [topBar(context), bottomBarAddButton(context)],
         ),
       ],
     );
   }
+
   Widget topBar(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 60),
@@ -46,14 +76,59 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.date_range, size: 30, color: Colors.blueAccent,),
-              Text('Today', style: TextStyle(fontSize: 19, color: Colors.blueAccent),)
+              Icon(
+                Icons.date_range,
+                size: 30,
+                color: Colors.blueAccent,
+              ),
+              Text(
+                'Today',
+                style: TextStyle(fontSize: 19, color: Colors.blueAccent),
+              )
             ],
           ),
           IconButton(
-            icon: Icon(Icons.history, size: 30, color: Colors.blueAccent,),
-            onPressed: (){},
+            icon: Icon(
+              Icons.history,
+              size: 30,
+              color: Colors.blueAccent,
+            ),
+            onPressed: () {},
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget listItem(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height / 20,
+      margin: EdgeInsets.only(
+          left: 20, right: 20, top: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                  margin: EdgeInsets.only(right: 20),
+                  height: 28,
+                  width: 28,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  child: Center(
+                    child: Text(
+                      '1',
+                      style: TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  )),
+              Text('14:30')
+            ],
+          ),
+          Text('5:00')
         ],
       ),
     );
@@ -62,7 +137,7 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
   Widget bottomBarAddButton(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height/15,
+      height: MediaQuery.of(context).size.height / 15,
       decoration: BoxDecoration(
         color: Colors.grey[100],
         boxShadow: [
@@ -75,7 +150,11 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
         ],
       ),
       child: FlatButton(
-        child: Icon(Icons.add, color: Colors.greenAccent,size: 40,),
+        child: Icon(
+          Icons.add,
+          color: Colors.greenAccent,
+          size: 40,
+        ),
       ),
     );
   }

@@ -12,7 +12,7 @@ class ProgressContainerScreen extends StatelessWidget {
         children: [
           Container(
             margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/4),
-            height:MediaQuery.of(context).size.height/2,
+            height:MediaQuery.of(context).size.height,
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
