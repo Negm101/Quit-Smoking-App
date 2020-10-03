@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "408784454242",
+    "firebase_url": "https://quit-smoking-app-96210.firebaseio.com",
+    "project_id": "quit-smoking-app-96210",
+    "storage_bucket": "quit-smoking-app-96210.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408784454242:android:6d024e0996d1d9b5dec73b",
+        "android_client_info": {
+          "package_name": "com.example.quit_smoking_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "408784454242-cc0sftjmpi3rh19la5kqapvv898cncok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEVZGqFkCdiC4HenmbKLFN28s5_j5H1WE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "408784454242-cc0sftjmpi3rh19la5kqapvv898cncok.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "408784454242-23bbdei529rv6hrq8q8nfbq8nj5bhfuu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.se.quitsmokingapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

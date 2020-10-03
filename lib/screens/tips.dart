@@ -78,7 +78,7 @@ class TipsContainerScreen extends StatelessWidget {
         ),
         SizedBox(height: 30),
         Container(
-          width: 350,
+          width: 500,
           child: FlatButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.5),
