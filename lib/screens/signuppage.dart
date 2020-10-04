@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:quit_smoking_app/screens/signuppage.dart';
 import 'package:quit_smoking_app/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:quit_smoking_app/custom_icons.dart';
 
-//context.read<AuthenticationService>().signOut();
-
-class SignInPage extends StatelessWidget {
+class SignUpPage extends StatelessWidget {
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -32,9 +30,21 @@ class SignInPage extends StatelessWidget {
               Container(
                 padding: EdgeInsets.fromLTRB(25, 10, 25, 10),
                 child: TextField(
-                  controller: emailController,
+                  controller: nameController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(CustomIcons.profile),
+                    filled: true,
+                    fillColor: Color(0xFFF4F4F4),
+                    labelText: 'Name',
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(25, 10, 25, 10),
+                child: TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.email),
                     filled: true,
                     fillColor: Color(0xFFF4F4F4),
                     labelText: 'Email Address',
@@ -65,12 +75,12 @@ class SignInPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   onPressed: () {
-                    context.read<AuthenticationService>().signIn(
-                        context: context,
+                    context.read<AuthenticationService>().signUp(
                         email: emailController.text,
-                        password: passwordController.text);
+                        password: passwordController.text,
+                        context: context);
                   },
-                  child: Text("Login"),
+                  child: Text("Register"),
                 ),
               ),
               Expanded(
@@ -82,19 +92,15 @@ class SignInPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          child: Text("Don't have an account?"),
+                          child: Text("Already have an account?"),
                         ),
                         FlatButton(
                           textColor: Color(0xFF0EB29A),
                           padding: EdgeInsets.all(0),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignUpPage()),
-                            );
+                            Navigator.pop(context);
                           },
-                          child: Text("Create one"),
+                          child: Text("Sign in"),
                         ),
                       ],
                     ),

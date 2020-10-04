@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quit_smoking_app/custom_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:quit_smoking_app/services/auth.dart';
 
 class ProgressContainerScreen extends StatelessWidget {
   ProgressContainerScreen();
@@ -8,16 +10,18 @@ class ProgressContainerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
       alignment: Alignment.topCenter,
-      child:  Stack(
+      child: Stack(
         children: [
           Container(
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/4),
-            height:MediaQuery.of(context).size.height,
+            margin:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
+            height: MediaQuery.of(context).size.height,
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
                 progressList(CustomIcons.money, 'Money Saved', 'RM 22'),
-                progressList(CustomIcons.cigareette, 'Non-Smoked Cigarettes', '22'),
+                progressList(
+                    CustomIcons.cigareette, 'Non-Smoked Cigarettes', '22'),
                 progressList(Icons.timeline, 'Life Regained', '10 Days'),
                 progressList(CustomIcons.relapsed, 'Relapsed', '3'),
               ],
@@ -30,24 +34,29 @@ class ProgressContainerScreen extends StatelessWidget {
                 color: Colors.blueAccent,
                 padding: EdgeInsets.all(0),
                 margin: EdgeInsets.only(bottom: 10),
-                height: MediaQuery.of(context).size.height/4,
+                height: MediaQuery.of(context).size.height / 4,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // share and edit profile button
                     Container(
-
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
-                            icon: Icon(CustomIcons.profile, color: Colors.white),
+                            icon:
+                                Icon(CustomIcons.profile, color: Colors.white),
                             padding: EdgeInsets.only(bottom: 0),
-                            onPressed: () {},
+                            onPressed: () {
+                              context.read<AuthenticationService>().signOut();
+                            },
                           ),
                           IconButton(
-                            icon: Icon(CustomIcons.share, color: Colors.white,),
+                            icon: Icon(
+                              CustomIcons.share,
+                              color: Colors.white,
+                            ),
                             padding: EdgeInsets.only(bottom: 0),
                             onPressed: () {},
                           )
@@ -61,9 +70,17 @@ class ProgressContainerScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('20 Days', style: TextStyle(fontSize: 45, color: Colors.white),),
-                          Text('Since Your Last Cigarette', style: TextStyle(fontSize: 16, color: Colors.white54),),
-                        ],),
+                          Text(
+                            '20 Days',
+                            style: TextStyle(fontSize: 45, color: Colors.white),
+                          ),
+                          Text(
+                            'Since Your Last Cigarette',
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white54),
+                          ),
+                        ],
+                      ),
                     ),
                     // I smoked button
                     Container(
@@ -72,12 +89,20 @@ class ProgressContainerScreen extends StatelessWidget {
                       child: FlatButton(
                         color: Colors.redAccent,
                         padding: EdgeInsets.all(0),
-                        onPressed: (){},
+                        onPressed: () {},
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.refresh,color: Colors.white,size: 22,),
-                            Text(' I SMOKED', style: TextStyle(fontSize: 16, color: Colors.white),),
+                            Icon(
+                              Icons.refresh,
+                              color: Colors.white,
+                              size: 22,
+                            ),
+                            Text(
+                              ' I SMOKED',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
+                            ),
                           ],
                         ),
                       ),
@@ -90,10 +115,9 @@ class ProgressContainerScreen extends StatelessWidget {
         ],
       ),
     );
-
   }
 
-  Widget progressList(IconData icon, String title, String number){
+  Widget progressList(IconData icon, String title, String number) {
     return ListTile(
       leading: Stack(
         alignment: Alignment.center,
@@ -102,8 +126,18 @@ class ProgressContainerScreen extends StatelessWidget {
           Icon(icon, color: Colors.grey[600]),
         ],
       ),
-      title: Text(title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),),
-      trailing: Text(number, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.lightGreen),textAlign: TextAlign.end,),
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+      ),
+      trailing: Text(
+        number,
+        style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            color: Colors.lightGreen),
+        textAlign: TextAlign.end,
+      ),
     );
   }
 
@@ -115,5 +149,4 @@ class ProgressContainerScreen extends StatelessWidget {
       shape: BoxShape.circle,
     ),
   );
-
 }
