@@ -16,33 +16,18 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
         ListView(
           physics: BouncingScrollPhysics(),
           children: [
-            Divider(
-              height: MediaQuery.of(context).size.height/12,
-              color: Colors.transparent,
-            ),
-            listItem(context),
-            Divider(
-              color: Colors.grey,
-              indent: 20,
-              endIndent: 20,
-            ),
-            listItem(context),
-            Divider(
-              color: Colors.grey,
-              indent: 20,
-              endIndent: 20,
-            ),
-            listItem(context),
-            Divider(
-              color: Colors.grey,
-              indent: 20,
-              endIndent: 20,
-            ),
-            listItem(context),
-            Divider(
-              height: MediaQuery.of(context).size.height/12,
-              color: Colors.transparent,
-            ),
+              Container(
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height / 9.25,
+              ),
+              CustomListItem(
+                labelNumber: '1',
+                timeLeft: '14:00',
+                timeRight: '13:22',
+                isDivider: true,
+              ),
           ],
         ),
         Column(
@@ -56,8 +41,14 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
   Widget topBar(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 60),
-      height: MediaQuery.of(context).size.height / 12,
-      width: MediaQuery.of(context).size.width,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height / 12,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       padding: EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
         color: Colors.grey[100],
@@ -100,44 +91,17 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
     );
   }
 
-  Widget listItem(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 20,
-      margin: EdgeInsets.only(
-          left: 20, right: 20, top: 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                  margin: EdgeInsets.only(right: 20),
-                  height: 28,
-                  width: 28,
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  child: Center(
-                    child: Text(
-                      '1',
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  )),
-              Text('14:30')
-            ],
-          ),
-          Text('5:00')
-        ],
-      ),
-    );
-  }
 
   Widget bottomBarAddButton(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 15,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height / 15,
       decoration: BoxDecoration(
         color: Colors.grey[100],
         boxShadow: [
@@ -150,6 +114,7 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
         ],
       ),
       child: FlatButton(
+        onPressed: (){},
         child: Icon(
           Icons.add,
           color: Colors.greenAccent,
@@ -157,5 +122,69 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
         ),
       ),
     );
+  }
+}
+
+class CustomListItem extends StatelessWidget {
+  CustomListItem({
+    @required this.labelNumber,
+    @required this.timeLeft,
+    @required this.timeRight,
+    this.color = Colors.red,
+    this.isDivider = false,
+  });
+  final String labelNumber;
+  final String timeLeft;
+  final String timeRight;
+  final bool isDivider;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: 20, right: 20, top: 0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(right: 20),
+                      height: 28,
+                      width: 28,
+                      decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: Center(
+                        child: Text(
+                          labelNumber,
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
+                  Text(timeLeft)
+                ],
+              ),
+              Text(timeRight),
+            ],
+          ),
+          customDivider(),
+        ],
+      )
+    );
+  }
+
+  Widget customDivider(){
+    if(isDivider == false){
+      return Container();
+    }
+    else {
+      return Divider(
+        color: Colors.grey,
+      );
+    }
   }
 }

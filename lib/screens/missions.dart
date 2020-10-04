@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:circular_check_box/circular_check_box.dart';
-
+import 'package:quit_smoking_app/screens/custom_matrials.dart';
 class MissionsContainerScreen extends StatefulWidget {
   const MissionsContainerScreen({Key key}) : super(key: key);
 
@@ -10,14 +9,15 @@ class MissionsContainerScreen extends StatefulWidget {
 }
 
 class _MissionsContainerState extends State<MissionsContainerScreen> {
-  bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Container(
-          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 6, bottom: MediaQuery.of(context).size.height/15),
+          margin: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height / 6,
+              bottom: MediaQuery.of(context).size.height / 15),
           child: ListView(
             physics: BouncingScrollPhysics(),
             children: [
@@ -30,17 +30,10 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
-              shortTermGoals(context, Colors.yellow, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
-              shortTermGoals(context, Colors.red, 'Hey there'),
+              CustomTiles(
+                title: 'Hey There',
+                priorityColor: Colors.red,
+              )
             ],
           ),
         ),
@@ -120,7 +113,7 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
   Widget bottomBarAddButton(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height/15,
+      height: MediaQuery.of(context).size.height / 15,
       decoration: BoxDecoration(
         color: Colors.grey[100],
         boxShadow: [
@@ -133,49 +126,13 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
         ],
       ),
       child: FlatButton(
-        child: Icon(Icons.add, color: Colors.greenAccent,size: 40,),
+        onPressed: (){},
+        child: Icon(
+          Icons.add,
+          color: Colors.greenAccent,
+          size: 40,
+        ),
       ),
-    );
-  }
-
-  Widget shortTermGoals(
-      BuildContext context, Color priorityColor, String title) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 10,
-      width: MediaQuery.of(context).size.width,
-      child: Container(
-          color: Colors.grey[100],
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width / 25,
-                    color: priorityColor,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 30),
-                    child: Text(title,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                  )
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.only(right: 10),
-                child: CircularCheckBox(
-                  value: _isChecked,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _isChecked = value;
-                    });
-                  },
-                ),
-              )
-            ],
-          )),
     );
   }
 
@@ -197,3 +154,4 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
     );
   }
 }
+
