@@ -16,7 +16,7 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
       children: [
         Container(
           margin: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height / 6,
+              top: MediaQuery.of(context).size.height / 6.1,
               bottom: MediaQuery.of(context).size.height / 15),
           child: ListView(
             physics: BouncingScrollPhysics(),
