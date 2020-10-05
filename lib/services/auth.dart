@@ -14,10 +14,32 @@ class AuthenticationService {
 
   Future signIn({String email, String password, BuildContext context}) async {
     try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: new Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  new CircularProgressIndicator(),
+                  new Text("   Signing-in..."),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      Navigator.pop(context);
       return "Signed In";
     } on FirebaseAuthException catch (e) {
+      Navigator.of(context).pop(); //pop the loading dialog
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -39,9 +61,28 @@ class AuthenticationService {
 
   Future signUp({BuildContext context, String email, String password}) async {
     try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: new Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  new CircularProgressIndicator(),
+                  new Text("   Registering your account"),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-
+      Navigator.pop(context);
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -60,6 +101,7 @@ class AuthenticationService {
             );
           });
     } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
       showDialog(
           context: context,
           builder: (BuildContext context) {
