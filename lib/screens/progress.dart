@@ -159,54 +159,90 @@ class ProgressContainerScreen extends StatelessWidget {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))),
-            contentPadding: EdgeInsets.only(top: 10.0),
+            contentPadding: EdgeInsets.only(top: 0.0),
             content: Container(
               width: 300.0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
+                    padding: EdgeInsets.all(20),
                     color: Color(0xFF0EB29A),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          "!",
-                          style: TextStyle(fontSize: 24.0),
+                    child: Center(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
                         ),
-                      ],
+                        child: Center(
+                          child: new Icon(
+                            CustomIcons.relapsed,
+                            color: Color(0xFF0EB29A),
+                          ),
+
+                          /*Text(
+                            "!",
+                            style: TextStyle(
+                                fontSize: 30.0, color: Color(0xFF0EB29A)),
+                          ),*/
+                        ),
+                      ),
                     ),
                   ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                    height: 4.0,
-                  ),
+                  SizedBox(height: 30),
                   Container(
-                    child: Text(
-                      "Don’t worry, it’s not the end",
-                      style: TextStyle(fontSize: 20, color: Color(0xFF000000)),
+                    child: Center(
+                      child: Text(
+                        "Don’t worry, it’s not the end",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(fontSize: 20, color: Color(0xFF000000)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Container(
+                      child: Text(
+                        "Quitting is hard we know, but you can do it! This does not mean you failed quitting smoke, don’t give up! ",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF000000).withOpacity(0.60),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(height: 25),
                   Container(
+                    width: 200,
+                    height: 30,
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.5),
+                      ),
+                      color: Color(0xFF0EB29A),
+                      child: Text(
+                        "SMOKED",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                  FlatButton(
                     child: Text(
-                        "Quitting is hard we know, but you can do it! This does not mean you failed quitting smoke, don’t give up! "),
-                  ),
-                  SizedBox(height: 25),
-                  FlatButton(
-                    child: Text("SMOKED"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  FlatButton(
-                    child: Text("Cancel"),
+                      "Cancel",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF000000).withOpacity(0.50),
+                      ),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
