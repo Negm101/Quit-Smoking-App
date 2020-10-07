@@ -1,11 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quit_smoking_app/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:quit_smoking_app/services/auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quit_smoking_app/services/database_helper.dart';
+import 'package:intl/intl.dart';
 
 class ProgressContainerScreen extends StatelessWidget {
   ProgressContainerScreen();
-
+  DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+  DatabaseHelper databaseHelper = new DatabaseHelper();
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -14,18 +19,20 @@ class ProgressContainerScreen extends StatelessWidget {
         children: [
           Container(
             margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
-            height: MediaQuery.of(context).size.height,
-            child: ListView(
-              physics: BouncingScrollPhysics(),
-              children: [
-                progressList(CustomIcons.money, 'Money Saved', 'RM 22'),
-                progressList(
-                    CustomIcons.cigareette, 'Non-Smoked Cigarettes', '22'),
-                progressList(Icons.timeline, 'Life Regained', '10 Days'),
-                progressList(CustomIcons.relapsed, 'Relapsed', '3'),
-              ],
-            ),
+                EdgeInsets.only(top: MediaQuery.of(context).size.height / 3.2),
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser.email).snapshots(),
+              builder: (context, snapshot){
+                if(!snapshot.hasData) return const Text('loading..,');
+                return ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemExtent: MediaQuery.of(context).size.height,
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) => completeList(snapshot.data.documents[index]),
+
+                );
+              },
+            )
           ),
           Column(
             children: [
@@ -34,7 +41,7 @@ class ProgressContainerScreen extends StatelessWidget {
                 color: Colors.blueAccent,
                 padding: EdgeInsets.all(0),
                 margin: EdgeInsets.only(bottom: 10),
-                height: MediaQuery.of(context).size.height / 4,
+                height: MediaQuery.of(context).size.height / 3.2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,7 +65,9 @@ class ProgressContainerScreen extends StatelessWidget {
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.only(bottom: 0),
-                            onPressed: () {},
+                            onPressed: () {
+
+                            },
                           )
                         ],
                       ),
@@ -118,7 +127,6 @@ class ProgressContainerScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget progressList(IconData icon, String title, String number) {
     return ListTile(
       leading: Stack(
@@ -139,6 +147,21 @@ class ProgressContainerScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Colors.lightGreen),
         textAlign: TextAlign.end,
+      ),
+    );
+  }
+
+  Widget completeList(DocumentSnapshot documentSnapshot){
+    return Container(
+      height: 200,
+      child: ListView(
+        physics: BouncingScrollPhysics(),
+        children: [
+          progressList(CustomIcons.money, 'Money Saved',getMoneySaved(documentSnapshot['quitDate'].toString(),documentSnapshot['cigPerPack'].toString(),documentSnapshot['cigPerDay'].toString(),documentSnapshot['pricePerPack'].toString(),documentSnapshot['currency'].toString())),
+          progressList(CustomIcons.cigareette, 'Non-Smoked Cigarettes', getNonSmokedCig(documentSnapshot['quitDate'].toString(), documentSnapshot['cigPerDay'].toString())),
+          progressList(Icons.timeline, 'Life Regained', getLifeRegained(documentSnapshot['quitDate'].toString())),
+          progressList(CustomIcons.relapsed, 'Relapsed', documentSnapshot['relapsed'].toString()),
+        ],
       ),
     );
   }
@@ -232,6 +255,7 @@ class ProgressContainerScreen extends StatelessWidget {
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
+                        //databaseHelper.resetUserQuitDate((int.parse(databaseHelper.getThis('profile', 'relapsed').toString())+1).toString());
                       },
                     ),
                   ),
@@ -252,5 +276,21 @@ class ProgressContainerScreen extends StatelessWidget {
             ),
           );
         });
+  }
+
+  String getMoneySaved(String quitDate, String cigPerPack, String cigPerDay, String pricePerPack, String currency){
+    double daysSinceSmoking =  double.parse(DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
+    double daysToBuyNewPack = double.parse(cigPerPack)/double.parse(cigPerDay);
+    double pricePerDay = double.parse(pricePerPack)/daysToBuyNewPack;
+    return currency +' '+(daysSinceSmoking*pricePerDay).toString();
+  }
+
+  String getNonSmokedCig(String quitDate, String cigPerDay){
+    int daysSinceSmoking =  int.parse(DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
+    return (daysSinceSmoking*int.parse(cigPerDay)).toString();
+  }
+  String getLifeRegained(String quitDate){
+    int daysSinceSmoking =  int.parse(DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
+    return (daysSinceSmoking*0.1333).toString() + ' Days';
   }
 }

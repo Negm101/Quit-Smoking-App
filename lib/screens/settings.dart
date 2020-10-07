@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quit_smoking_app/screens/user_profile.dart';
 
 class SettingsContainerScreen extends StatelessWidget {
   SettingsContainerScreen();
@@ -12,12 +13,19 @@ class SettingsContainerScreen extends StatelessWidget {
           icon: Icons.person,
           context: context,
           elevation: 0,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserProfileScreen()),
+            );
+          },
         ),
         CustomButton(
           title: 'Support Connection',
           icon: Icons.local_library,
           context: context,
           elevation: 0,
+          onPressed: (){},
         ),
       ],
     );
