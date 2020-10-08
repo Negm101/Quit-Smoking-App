@@ -1,13 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 
 class CustomTiles extends StatefulWidget {
   final String title;
   final Color priorityColor;
+  final DocumentSnapshot documentSnapshot;
   bool isChecked;
   CustomTiles({
     Key key,
     @required this.title,
+    @required this.documentSnapshot,
     this.priorityColor = Colors.grey,
     this.isChecked = false,
   });
@@ -33,11 +36,11 @@ class _CustomTilesState extends State<CustomTiles> {
                   Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width / 25,
-                    color: widget.priorityColor,
+                    color: getPriorityColor(),
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 30),
-                    child: Text(widget.title,
+                    child: Text(widget.documentSnapshot['title'],
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold)),
                   )
@@ -46,7 +49,7 @@ class _CustomTilesState extends State<CustomTiles> {
               Container(
                 margin: EdgeInsets.only(right: 10),
                 child: CircularCheckBox(
-                  value: widget.isChecked,
+                  value: widget.documentSnapshot['status'],
                   onChanged: (bool value) {
                     setState(() {
                       widget.isChecked = value;
@@ -57,5 +60,14 @@ class _CustomTilesState extends State<CustomTiles> {
             ],
           )),
     );
+  }
+
+  Color getPriorityColor(){
+    if(widget.documentSnapshot['priority'] == '0')
+      return Colors.grey;
+    else if(widget.documentSnapshot['priority'] == '1')
+      return Colors.yellow;
+    else if(widget.documentSnapshot['priority'].toString() == '2')
+      return Colors.red;
   }
 }
