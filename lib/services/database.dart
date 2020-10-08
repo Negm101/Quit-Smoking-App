@@ -37,9 +37,43 @@ class DatabaseService {
     });
   }
 
-  String getDaysSinceSmoked() {
+  Future<String> getDaysSinceSmoked() async {
+    // DateTime now = new DateTime.now();
+    //
+    // final results = recordCollection.where('uid', isEqualTo: uid).get();
+    //
+    // print(results.documents);
+    DateTime latestDate;
     DateTime now = new DateTime.now();
 
-    return "testing";
+    await FirebaseFirestore.instance
+        .collection('record')
+        .where('uid', isEqualTo: uid)
+        .orderBy("dateTime", descending: true)
+        .limit(1)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        Timestamp t = doc["dateTime"];
+        latestDate = t.toDate();
+      });
+    });
+
+    var difference = now.difference(latestDate).inDays;
+    String unit = " Days";
+
+    if (difference == 0) {
+      difference = now.difference(latestDate).inHours;
+      unit = " Hours";
+    }
+
+    if (difference == 0) {
+      difference = now.difference(latestDate).inMinutes;
+      unit = " Minutes";
+    }
+
+    String result = difference.toString() + unit;
+    print(result);
+    return result;
   }
 }

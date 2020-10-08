@@ -7,11 +7,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:quit_smoking_app/services/database.dart';
 
-class ProgressContainerScreen extends StatelessWidget {
+class ProgressContainerScreen extends StatefulWidget {
   ProgressContainerScreen({this.currentUserUID});
   final String currentUserUID;
 
+  @override
+  _ProgressContainerScreenState createState() =>
+      _ProgressContainerScreenState();
+}
+
+class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+  String daysSinceSmokedText = "Loading..";
+
+  _ProgressContainerScreenState() {}
+
+  initState() {
+    super.initState();
+    print("Loading all async");
+    getDaysSinceSmoked().then((val) => setState(() {
+          daysSinceSmokedText = val;
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -80,7 +98,7 @@ class ProgressContainerScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            getDaysSinceSmoked(),
+                            daysSinceSmokedText,
                             style: TextStyle(fontSize: 45, color: Colors.white),
                           ),
                           Text(
@@ -223,12 +241,6 @@ class ProgressContainerScreen extends StatelessWidget {
                             CustomIcons.relapsed,
                             color: Color(0xFF0EB29A),
                           ),
-
-                          /*Text(
-                            "!",
-                            style: TextStyle(
-                                fontSize: 30.0, color: Color(0xFF0EB29A)),
-                          ),*/
                         ),
                       ),
                     ),
@@ -273,6 +285,9 @@ class ProgressContainerScreen extends StatelessWidget {
                       ),
                       onPressed: () {
                         DatabaseService(uid: userUID).addSmokingRecord();
+                        getDaysSinceSmoked().then((val) => setState(() {
+                              daysSinceSmokedText = val;
+                            }));
                         Navigator.of(context).pop();
                       },
                     ),
@@ -296,8 +311,9 @@ class ProgressContainerScreen extends StatelessWidget {
         });
   }
 
-  String getDaysSinceSmoked() {
-    return DatabaseService(uid: currentUserUID).getDaysSinceSmoked();
+  Future<String> getDaysSinceSmoked() async {
+    return await DatabaseService(uid: widget.currentUserUID)
+        .getDaysSinceSmoked();
   }
 
   String getMoneySaved(String quitDate, String cigPerPack, String cigPerDay,
