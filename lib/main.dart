@@ -52,14 +52,16 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User>();
 
     if (firebaseUser != null) {
-      return MyStatefulWidget();
+      final userUID = firebaseUser.uid;
+      return MyStatefulWidget(uid: userUID);
     }
     return SignInPage();
   }
 }
 
 class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
+  final String uid;
+  MyStatefulWidget({Key key, this.uid}) : super(key: key);
 
   @override
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
@@ -67,13 +69,21 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
-  static List<Widget> _widgetOptions = <Widget>[
-    ProgressContainerScreen(),
-    TipsContainerScreen(),
-    MissionsContainerScreen(),
-    ScheduleContainerScreen(),
-    SettingsContainerScreen(),
-  ];
+  // static List<Widget> _widgetOptions = <Widget>[
+  //   ProgressContainerScreen(),
+  //   TipsContainerScreen(),
+  //   MissionsContainerScreen(),
+  //   ScheduleContainerScreen(),
+  //   SettingsContainerScreen(),
+  // ];
+
+  Widget _progressScreen() {
+    return ProgressContainerScreen(currentUserUID: widget.uid);
+  }
+
+  Widget _tipsScreen() {
+    return TipsContainerScreen(currentUserUID: widget.uid);
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -83,12 +93,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> screens = [
+      ProgressContainerScreen(currentUserUID: widget.uid),
+      TipsContainerScreen(currentUserUID: widget.uid),
+      MissionsContainerScreen(currentUserUID: widget.uid),
+      ScheduleContainerScreen(currentUserUID: widget.uid),
+      SettingsContainerScreen(currentUserUID: widget.uid),
+    ];
+
     const TextStyle textStyle =
         TextStyle(fontSize: 11.0); // text style for bottom nav bar for texts
     return SafeArea(
       child: Scaffold(
         body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
+          child: screens[_selectedIndex],
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

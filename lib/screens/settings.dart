@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:quit_smoking_app/screens/user_profile.dart';
 
 class SettingsContainerScreen extends StatelessWidget {
-  SettingsContainerScreen();
+  SettingsContainerScreen({this.currentUserUID});
+  final String currentUserUID;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class SettingsContainerScreen extends StatelessWidget {
           icon: Icons.local_library,
           context: context,
           elevation: 0,
-          onPressed: (){},
+          onPressed: () {},
         ),
       ],
     );

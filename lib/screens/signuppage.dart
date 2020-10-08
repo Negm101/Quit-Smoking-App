@@ -75,9 +75,11 @@ class SignUpPage extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.read<AuthenticationService>().signUp(
-                        email: emailController.text,
-                        password: passwordController.text,
-                        context: context);
+                          email: emailController.text,
+                          password: passwordController.text,
+                          name: nameController.text,
+                          context: context,
+                        );
                   },
                   child: Text("Register"),
                 ),

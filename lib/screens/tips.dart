@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TipsContainerScreen extends StatelessWidget {
-  TipsContainerScreen();
+  TipsContainerScreen({this.currentUserUID});
+  final String currentUserUID;
 
   @override
   Widget build(BuildContext context) {
