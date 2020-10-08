@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-
 class DatabaseService {
   final String uid;
   DatabaseService({this.uid});
@@ -35,6 +32,50 @@ class DatabaseService {
       'uid': uid,
       'dateTime': now,
     });
+  }
+
+  Future<String> getNonSmokedCig() async {
+    return "Testing";
+  }
+
+  Future<String> getMoneySaved() async {
+    DateTime now = new DateTime.now();
+
+    final userData =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+    //count number of sticks smoked since quitting
+    int totalSmoked = 0;
+    await FirebaseFirestore.instance
+        .collection('record')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        totalSmoked++;
+      });
+    });
+    print("Total Smoked: " + totalSmoked.toString());
+    final quitDate = userData['quitDate'].toDate();
+    final costPerStick = userData['pricePerPack'] / userData['cigPerPack'];
+    final costPerDay = userData['cigPerDay'] * costPerStick;
+    print(quitDate);
+    print(costPerDay);
+
+    var daysSinceQuit = now.difference(quitDate).inDays;
+    if (daysSinceQuit == 0) {
+      daysSinceQuit = 1;
+    }
+
+    final grossAmountSaved = daysSinceQuit * costPerDay;
+    final nettAmountSaved = grossAmountSaved - totalSmoked * costPerStick;
+    // double daysSinceSmoking = double.parse(
+    //     DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
+    // double daysToBuyNewPack =
+    //     double.parse(cigPerPack) / double.parse(cigPerDay);
+    // double pricePerDay = double.parse(pricePerPack) / daysToBuyNewPack;
+
+    return userData['currency'] + " " + nettAmountSaved.toString();
   }
 
   Future<String> getDaysSinceSmoked() async {

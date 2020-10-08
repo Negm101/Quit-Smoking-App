@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quit_smoking_app/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:quit_smoking_app/services/auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:quit_smoking_app/services/database.dart';
 
@@ -19,14 +17,19 @@ class ProgressContainerScreen extends StatefulWidget {
 class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
   String daysSinceSmokedText = "Loading..";
+  String moneySaved = "Loading..";
 
-  _ProgressContainerScreenState() {}
+  _ProgressContainerScreenState();
 
   initState() {
     super.initState();
     print("Loading all async");
     getDaysSinceSmoked().then((val) => setState(() {
           daysSinceSmokedText = val;
+        }));
+
+    getMoneySaved().then((val) => setState(() {
+          moneySaved = val;
         }));
   }
 
@@ -37,23 +40,14 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
       child: Stack(
         children: [
           Container(
-              margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height / 3.2),
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection(FirebaseAuth.instance.currentUser.email)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) return const Text('loading..,');
-                  return ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemExtent: MediaQuery.of(context).size.height,
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) =>
-                        completeList(snapshot.data.documents[index]),
-                  );
-                },
-              )),
+            margin:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
+            height: MediaQuery.of(context).size.height,
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: [SizedBox(height: 80), completeList()],
+            ),
+          ),
           Column(
             children: [
               /* Top bar */
@@ -173,30 +167,36 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
     );
   }
 
-  Widget completeList(DocumentSnapshot documentSnapshot) {
+  Widget completeList() {
     return Container(
-      height: 200,
+      height: 300,
       child: ListView(
         physics: BouncingScrollPhysics(),
         children: [
           progressList(
-              CustomIcons.money,
-              'Money Saved',
-              getMoneySaved(
-                  documentSnapshot['quitDate'].toString(),
-                  documentSnapshot['cigPerPack'].toString(),
-                  documentSnapshot['cigPerDay'].toString(),
-                  documentSnapshot['pricePerPack'].toString(),
-                  documentSnapshot['currency'].toString())),
+            CustomIcons.money,
+            'Money Saved',
+            moneySaved,
+          ),
           progressList(
-              CustomIcons.cigareette,
-              'Non-Smoked Cigarettes',
-              getNonSmokedCig(documentSnapshot['quitDate'].toString(),
-                  documentSnapshot['cigPerDay'].toString())),
-          progressList(Icons.timeline, 'Life Regained',
-              getLifeRegained(documentSnapshot['quitDate'].toString())),
-          progressList(CustomIcons.relapsed, 'Relapsed',
-              documentSnapshot['relapsed'].toString()),
+            CustomIcons.cigareette,
+            'Non-Smoked Cigarettes',
+            'To do',
+            // getNonSmokedCig(documentSnapshot['quitDate'].toString(),
+            //     documentSnapshot['cigPerDay'].toString()),
+          ),
+          progressList(
+            Icons.timeline,
+            'Life Regained',
+            'to do',
+            // getLifeRegained(documentSnapshot['quitDate'].toString()),
+          ),
+          progressList(
+            CustomIcons.relapsed,
+            'Relapsed',
+            'todo',
+            // documentSnapshot['relapsed'].toString(),
+          ),
         ],
       ),
     );
@@ -316,14 +316,16 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
         .getDaysSinceSmoked();
   }
 
-  String getMoneySaved(String quitDate, String cigPerPack, String cigPerDay,
-      String pricePerPack, String currency) {
-    double daysSinceSmoking = double.parse(
-        DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
-    double daysToBuyNewPack =
-        double.parse(cigPerPack) / double.parse(cigPerDay);
-    double pricePerDay = double.parse(pricePerPack) / daysToBuyNewPack;
-    return currency + ' ' + (daysSinceSmoking * pricePerDay).toString();
+  Future<String> getMoneySaved(
+      /*String quitDate, String cigPerPack, String cigPerDay,
+      String pricePerPack, String currency*/
+      ) async {
+    // double daysSinceSmoking = double.parse(
+    //     DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
+    // double daysToBuyNewPack =
+    //     double.parse(cigPerPack) / double.parse(cigPerDay);
+    // double pricePerDay = double.parse(pricePerPack) / daysToBuyNewPack;
+    return await DatabaseService(uid: widget.currentUserUID).getMoneySaved();
   }
 
   String getNonSmokedCig(String quitDate, String cigPerDay) {

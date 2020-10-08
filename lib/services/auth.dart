@@ -9,7 +9,7 @@ class AuthenticationService {
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
   Future<String> getCurrentUID() async {
-    final user = await _firebaseAuth.currentUser;
+    final user = _firebaseAuth.currentUser;
     String uid = user.uid;
     return uid;
   }

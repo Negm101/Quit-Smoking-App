@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:quit_smoking_app/screens/custom_matrials.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quit_smoking_app/custom_icons.dart';
-import 'package:provider/provider.dart';
-import 'package:quit_smoking_app/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:quit_smoking_app/services/database_helper.dart';
-import 'package:intl/intl.dart';
 
 class MissionsContainerScreen extends StatefulWidget {
   const MissionsContainerScreen({Key key, String currentUserUID})

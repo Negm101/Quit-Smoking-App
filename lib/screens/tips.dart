@@ -30,7 +30,6 @@ class TipsContainerScreen extends StatelessWidget {
           SizedBox(height: 25),
         ],
       ),
-      /* TODO: Start writing tips here */
     );
   }
 

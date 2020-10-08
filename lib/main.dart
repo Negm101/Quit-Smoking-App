@@ -77,14 +77,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   //   SettingsContainerScreen(),
   // ];
 
-  Widget _progressScreen() {
-    return ProgressContainerScreen(currentUserUID: widget.uid);
-  }
-
-  Widget _tipsScreen() {
-    return TipsContainerScreen(currentUserUID: widget.uid);
-  }
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
