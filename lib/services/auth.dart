@@ -1,13 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:quit_smoking_app/services/database_helper.dart';
+import 'package:quit_smoking_app/services/database.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
-  DatabaseHelper databaseHelper = new DatabaseHelper();
   AuthenticationService(this._firebaseAuth);
 
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
+
+  Future<String> getCurrentUID() async {
+    final user = _firebaseAuth.currentUser;
+    String uid = user.uid;
+    return uid;
+  }
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
@@ -60,9 +65,12 @@ class AuthenticationService {
     }
   }
 
-
-
-  Future signUp({BuildContext context, String email, String password}) async {
+  Future signUp({
+    BuildContext context,
+    String email,
+    String password,
+    String name,
+  }) async {
     try {
       showDialog(
         context: context,
@@ -75,14 +83,21 @@ class AuthenticationService {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   new CircularProgressIndicator(),
-                  new Text("Registering your account"),
+                  new Text("   Registering your account"),
                 ],
               ),
             ),
           );
         },
       );
-      databaseHelper.initializeUser(email,password); // initializing users' profile
+      await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final String uid = await getCurrentUID();
+
+      await DatabaseService(uid: uid).createNewUser(email, name);
       Navigator.pop(context);
       showDialog(
           context: context,

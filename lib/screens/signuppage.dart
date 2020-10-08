@@ -13,7 +13,7 @@ class SignUpPage extends StatelessWidget {
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: Center(
-          child: ListView(
+          child: Column(
             children: [
               SizedBox(height: 75),
               Container(
@@ -75,9 +75,11 @@ class SignUpPage extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.read<AuthenticationService>().signUp(
-                        email: emailController.text,
-                        password: passwordController.text,
-                        context: context);
+                          email: emailController.text,
+                          password: passwordController.text,
+                          name: nameController.text,
+                          context: context,
+                        );
                   },
                   child: Text("Register"),
                 ),

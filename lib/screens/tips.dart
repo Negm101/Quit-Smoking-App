@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TipsContainerScreen extends StatelessWidget {
-  TipsContainerScreen();
+  TipsContainerScreen({this.currentUserUID});
+  final String currentUserUID;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,6 @@ class TipsContainerScreen extends StatelessWidget {
           SizedBox(height: 25),
         ],
       ),
-      /* TODO: Start writing tips here */
     );
   }
 

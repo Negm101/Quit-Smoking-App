@@ -1,16 +1,61 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quit_smoking_app/custom_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:quit_smoking_app/services/auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:quit_smoking_app/services/database_helper.dart';
 import 'package:intl/intl.dart';
+import 'package:quit_smoking_app/services/database.dart';
 
-class ProgressContainerScreen extends StatelessWidget {
-  ProgressContainerScreen();
+class ProgressContainerScreen extends StatefulWidget {
+  ProgressContainerScreen({this.currentUserUID});
+  final String currentUserUID;
+
+  @override
+  _ProgressContainerScreenState createState() =>
+      _ProgressContainerScreenState();
+}
+
+class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-  DatabaseHelper databaseHelper = new DatabaseHelper();
+  String daysSinceSmokedText = "Loading..";
+  String moneySaved = "Loading..";
+  String nonSmokedCig = "Loading..";
+  String lifeRegained = "Loading..";
+  String name = "Human Being";
+
+  _ProgressContainerScreenState();
+
+  initState() {
+    super.initState();
+    print("Loading all async");
+
+    //Loads the name
+    DatabaseService(uid: widget.currentUserUID)
+        .getName()
+        .then((val) => setState(() {
+              name = val;
+            }));
+
+    loadData();
+  }
+
+  loadData() {
+    getDaysSinceSmoked().then((val) => setState(() {
+          daysSinceSmokedText = val;
+        }));
+
+    getMoneySaved().then((val) => setState(() {
+          moneySaved = val;
+        }));
+
+    getNonSmokedCig().then((val) => setState(() {
+          nonSmokedCig = val;
+        }));
+
+    getLifeRegained().then((val) => setState(() {
+          lifeRegained = val;
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -19,20 +64,12 @@ class ProgressContainerScreen extends StatelessWidget {
         children: [
           Container(
             margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 3.2),
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser.email).snapshots(),
-              builder: (context, snapshot){
-                if(!snapshot.hasData) return const Text('loading..,');
-                return ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemExtent: MediaQuery.of(context).size.height,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) => completeList(snapshot.data.documents[index]),
-
-                );
-              },
-            )
+                EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
+            height: MediaQuery.of(context).size.height,
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: [SizedBox(height: 80), completeList()],
+            ),
           ),
           Column(
             children: [
@@ -55,8 +92,11 @@ class ProgressContainerScreen extends StatelessWidget {
                             icon:
                                 Icon(CustomIcons.profile, color: Colors.white),
                             padding: EdgeInsets.only(bottom: 0),
-                            onPressed: () {
-                              context.read<AuthenticationService>().signOut();
+                            onPressed: () async {
+                              final userUID = await context
+                                  .read<AuthenticationService>()
+                                  .getCurrentUID();
+                              logoutButton(context, userUID);
                             },
                           ),
                           IconButton(
@@ -65,9 +105,7 @@ class ProgressContainerScreen extends StatelessWidget {
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.only(bottom: 0),
-                            onPressed: () {
-
-                            },
+                            onPressed: () {},
                           )
                         ],
                       ),
@@ -80,7 +118,7 @@ class ProgressContainerScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '20 Days',
+                            daysSinceSmokedText,
                             style: TextStyle(fontSize: 45, color: Colors.white),
                           ),
                           Text(
@@ -98,8 +136,11 @@ class ProgressContainerScreen extends StatelessWidget {
                       child: FlatButton(
                         color: Colors.redAccent,
                         padding: EdgeInsets.all(0),
-                        onPressed: () {
-                          showDialogSmoked(context);
+                        onPressed: () async {
+                          final userUID = await context
+                              .read<AuthenticationService>()
+                              .getCurrentUID();
+                          showDialogSmoked(context, userUID);
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -127,6 +168,7 @@ class ProgressContainerScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget progressList(IconData icon, String title, String number) {
     return ListTile(
       leading: Stack(
@@ -151,16 +193,32 @@ class ProgressContainerScreen extends StatelessWidget {
     );
   }
 
-  Widget completeList(DocumentSnapshot documentSnapshot){
+  Widget completeList() {
     return Container(
-      height: 200,
+      height: 300,
       child: ListView(
         physics: BouncingScrollPhysics(),
         children: [
-          progressList(CustomIcons.money, 'Money Saved',getMoneySaved(documentSnapshot['quitDate'].toString(),documentSnapshot['cigPerPack'].toString(),documentSnapshot['cigPerDay'].toString(),documentSnapshot['pricePerPack'].toString(),documentSnapshot['currency'].toString())),
-          progressList(CustomIcons.cigareette, 'Non-Smoked Cigarettes', getNonSmokedCig(documentSnapshot['quitDate'].toString(), documentSnapshot['cigPerDay'].toString())),
-          progressList(Icons.timeline, 'Life Regained', getLifeRegained(documentSnapshot['quitDate'].toString())),
-          progressList(CustomIcons.relapsed, 'Relapsed', documentSnapshot['relapsed'].toString()),
+          progressList(
+            CustomIcons.money,
+            'Money Saved',
+            moneySaved,
+          ),
+          progressList(
+            CustomIcons.cigareette,
+            'Non-Smoked Cigarettes',
+            nonSmokedCig,
+          ),
+          progressList(
+            Icons.timeline,
+            'Life Regained',
+            lifeRegained,
+          ),
+          progressList(
+            CustomIcons.relapsed,
+            'Relapsed',
+            'Coming Soon',
+          ),
         ],
       ),
     );
@@ -175,7 +233,7 @@ class ProgressContainerScreen extends StatelessWidget {
     ),
   );
 
-  showDialogSmoked(BuildContext context) {
+  showDialogSmoked(BuildContext context, String userUID) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -205,12 +263,6 @@ class ProgressContainerScreen extends StatelessWidget {
                             CustomIcons.relapsed,
                             color: Color(0xFF0EB29A),
                           ),
-
-                          /*Text(
-                            "!",
-                            style: TextStyle(
-                                fontSize: 30.0, color: Color(0xFF0EB29A)),
-                          ),*/
                         ),
                       ),
                     ),
@@ -253,9 +305,13 @@ class ProgressContainerScreen extends StatelessWidget {
                         "SMOKED",
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        await DatabaseService(uid: userUID).addSmokingRecord();
+                        // getDaysSinceSmoked().then((val) => setState(() {
+                        //       daysSinceSmokedText = val;
+                        //     }));
+                        loadData();
                         Navigator.of(context).pop();
-                        //databaseHelper.resetUserQuitDate((int.parse(databaseHelper.getThis('profile', 'relapsed').toString())+1).toString());
                       },
                     ),
                   ),
@@ -278,19 +334,117 @@ class ProgressContainerScreen extends StatelessWidget {
         });
   }
 
-  String getMoneySaved(String quitDate, String cigPerPack, String cigPerDay, String pricePerPack, String currency){
-    double daysSinceSmoking =  double.parse(DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
-    double daysToBuyNewPack = double.parse(cigPerPack)/double.parse(cigPerDay);
-    double pricePerDay = double.parse(pricePerPack)/daysToBuyNewPack;
-    return currency +' '+(daysSinceSmoking*pricePerDay).toString();
+  Future<String> getDaysSinceSmoked() async {
+    return await DatabaseService(uid: widget.currentUserUID)
+        .getDaysSinceSmoked();
   }
 
-  String getNonSmokedCig(String quitDate, String cigPerDay){
-    int daysSinceSmoking =  int.parse(DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
-    return (daysSinceSmoking*int.parse(cigPerDay)).toString();
+  Future<String> getMoneySaved() async {
+    return await DatabaseService(uid: widget.currentUserUID).getMoneySaved();
   }
-  String getLifeRegained(String quitDate){
-    int daysSinceSmoking =  int.parse(DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
-    return (daysSinceSmoking*0.1333).toString() + ' Days';
+
+  Future<String> getNonSmokedCig() async {
+    return await DatabaseService(uid: widget.currentUserUID).getNonSmokedCig();
+  }
+
+  Future<String> getLifeRegained() async {
+    return await DatabaseService(uid: widget.currentUserUID).getLifeRegained();
+  }
+
+  logoutButton(BuildContext context, String userUID) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            contentPadding: EdgeInsets.only(top: 0.0),
+            content: Container(
+              width: 300.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    color: Color(0xFF0EB29A),
+                    child: Center(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                          child: new Icon(
+                            CustomIcons.relapsed,
+                            color: Color(0xFF0EB29A),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    child: Center(
+                      child: Text(
+                        "Sign out?",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(fontSize: 20, color: Color(0xFF000000)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Container(
+                      child: Text(
+                        "Quitting is hard we know, don't give up!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF000000).withOpacity(0.60),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  Container(
+                    width: 200,
+                    height: 30,
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.5),
+                      ),
+                      color: Color(0xFF0EB29A),
+                      child: Text(
+                        "Sign Out",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                      onPressed: () async {
+                        context.read<AuthenticationService>().signOut();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                  FlatButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF000000).withOpacity(0.50),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
