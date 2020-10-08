@@ -13,7 +13,7 @@ class SignUpPage extends StatelessWidget {
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: Center(
-          child: ListView(
+          child: Column(
             children: [
               SizedBox(height: 75),
               Container(

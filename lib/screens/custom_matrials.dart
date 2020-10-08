@@ -15,7 +15,6 @@ class CustomTiles extends StatefulWidget {
     this.isChecked = false,
   });
 
-
   @override
   _CustomTilesState createState() => _CustomTilesState();
 }
@@ -62,12 +61,14 @@ class _CustomTilesState extends State<CustomTiles> {
     );
   }
 
-  Color getPriorityColor(){
-    if(widget.documentSnapshot['priority'] == '0')
+  Color getPriorityColor() {
+    if (widget.documentSnapshot['priority'] == '0')
       return Colors.grey;
-    else if(widget.documentSnapshot['priority'] == '1')
+    else if (widget.documentSnapshot['priority'] == '1')
       return Colors.yellow;
-    else if(widget.documentSnapshot['priority'].toString() == '2')
+    else if (widget.documentSnapshot['priority'].toString() == '2')
       return Colors.red;
+
+    return Colors.grey;
   }
 }

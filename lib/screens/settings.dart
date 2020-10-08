@@ -17,7 +17,9 @@ class SettingsContainerScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => UserProfileScreen()),
+              MaterialPageRoute(
+                  builder: (context) =>
+                      UserProfileScreen(currentUserUID: currentUserUID)),
             );
           },
         ),

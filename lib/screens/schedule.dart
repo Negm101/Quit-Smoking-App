@@ -1,14 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:quit_smoking_app/services/database.dart';
+import 'package:intl/intl.dart';
 
 class ScheduleContainerScreen extends StatefulWidget {
-  const ScheduleContainerScreen({Key key, String currentUserUID})
-      : super(key: key);
+  ScheduleContainerScreen({this.currentUserUID});
+  final String currentUserUID;
 
   @override
   _ScheduleContainerState createState() => _ScheduleContainerState();
 }
 
 class _ScheduleContainerState extends State<ScheduleContainerScreen> {
+  var scheduleWidgets = <Widget>[];
+
+  @override
+  void initState() {
+    DatabaseService(uid: widget.currentUserUID)
+        .getSchedule()
+        .then((docs) => setState(() {
+              int counter = 1;
+              docs.docs.forEach((doc) {
+                DateTime dateTime = doc['dateTime'].toDate();
+                String time = DateFormat('kk:mm').format(dateTime);
+                print("Time: " + time);
+
+                scheduleWidgets.add(CustomListItem(
+                  labelNumber: counter.toString(),
+                  timeLeft: time,
+                  timeRight: '15:22',
+                  isDivider: true,
+                ));
+                counter++;
+              });
+            }));
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -19,12 +47,7 @@ class _ScheduleContainerState extends State<ScheduleContainerScreen> {
             Container(
               height: MediaQuery.of(context).size.height / 9.25,
             ),
-            CustomListItem(
-              labelNumber: '1',
-              timeLeft: '14:00',
-              timeRight: '13:22',
-              isDivider: true,
-            ),
+            Column(children: scheduleWidgets),
           ],
         ),
         Column(
@@ -151,7 +174,7 @@ class CustomListItem extends StatelessWidget {
                     Text(timeLeft)
                   ],
                 ),
-                Text(timeRight),
+                // Text(timeRight),
               ],
             ),
             customDivider(),

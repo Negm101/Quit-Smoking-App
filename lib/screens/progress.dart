@@ -18,18 +18,41 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
   String daysSinceSmokedText = "Loading..";
   String moneySaved = "Loading..";
+  String nonSmokedCig = "Loading..";
+  String lifeRegained = "Loading..";
+  String name = "Human Being";
 
   _ProgressContainerScreenState();
 
   initState() {
     super.initState();
     print("Loading all async");
+
+    //Loads the name
+    DatabaseService(uid: widget.currentUserUID)
+        .getName()
+        .then((val) => setState(() {
+              name = val;
+            }));
+
+    loadData();
+  }
+
+  loadData() {
     getDaysSinceSmoked().then((val) => setState(() {
           daysSinceSmokedText = val;
         }));
 
     getMoneySaved().then((val) => setState(() {
           moneySaved = val;
+        }));
+
+    getNonSmokedCig().then((val) => setState(() {
+          nonSmokedCig = val;
+        }));
+
+    getLifeRegained().then((val) => setState(() {
+          lifeRegained = val;
         }));
   }
 
@@ -69,8 +92,11 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
                             icon:
                                 Icon(CustomIcons.profile, color: Colors.white),
                             padding: EdgeInsets.only(bottom: 0),
-                            onPressed: () {
-                              context.read<AuthenticationService>().signOut();
+                            onPressed: () async {
+                              final userUID = await context
+                                  .read<AuthenticationService>()
+                                  .getCurrentUID();
+                              logoutButton(context, userUID);
                             },
                           ),
                           IconButton(
@@ -181,21 +207,17 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
           progressList(
             CustomIcons.cigareette,
             'Non-Smoked Cigarettes',
-            'To do',
-            // getNonSmokedCig(documentSnapshot['quitDate'].toString(),
-            //     documentSnapshot['cigPerDay'].toString()),
+            nonSmokedCig,
           ),
           progressList(
             Icons.timeline,
             'Life Regained',
-            'to do',
-            // getLifeRegained(documentSnapshot['quitDate'].toString()),
+            lifeRegained,
           ),
           progressList(
             CustomIcons.relapsed,
             'Relapsed',
-            'todo',
-            // documentSnapshot['relapsed'].toString(),
+            'Coming Soon',
           ),
         ],
       ),
@@ -283,11 +305,12 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
                         "SMOKED",
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
-                      onPressed: () {
-                        DatabaseService(uid: userUID).addSmokingRecord();
-                        getDaysSinceSmoked().then((val) => setState(() {
-                              daysSinceSmokedText = val;
-                            }));
+                      onPressed: () async {
+                        await DatabaseService(uid: userUID).addSmokingRecord();
+                        // getDaysSinceSmoked().then((val) => setState(() {
+                        //       daysSinceSmokedText = val;
+                        //     }));
+                        loadData();
                         Navigator.of(context).pop();
                       },
                     ),
@@ -316,27 +339,112 @@ class _ProgressContainerScreenState extends State<ProgressContainerScreen> {
         .getDaysSinceSmoked();
   }
 
-  Future<String> getMoneySaved(
-      /*String quitDate, String cigPerPack, String cigPerDay,
-      String pricePerPack, String currency*/
-      ) async {
-    // double daysSinceSmoking = double.parse(
-    //     DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
-    // double daysToBuyNewPack =
-    //     double.parse(cigPerPack) / double.parse(cigPerDay);
-    // double pricePerDay = double.parse(pricePerPack) / daysToBuyNewPack;
+  Future<String> getMoneySaved() async {
     return await DatabaseService(uid: widget.currentUserUID).getMoneySaved();
   }
 
-  String getNonSmokedCig(String quitDate, String cigPerDay) {
-    int daysSinceSmoking = int.parse(
-        DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
-    return (daysSinceSmoking * int.parse(cigPerDay)).toString();
+  Future<String> getNonSmokedCig() async {
+    return await DatabaseService(uid: widget.currentUserUID).getNonSmokedCig();
   }
 
-  String getLifeRegained(String quitDate) {
-    int daysSinceSmoking = int.parse(
-        DateTime.now().difference(DateTime.parse(quitDate)).inDays.toString());
-    return (daysSinceSmoking * 0.1333).toString() + ' Days';
+  Future<String> getLifeRegained() async {
+    return await DatabaseService(uid: widget.currentUserUID).getLifeRegained();
+  }
+
+  logoutButton(BuildContext context, String userUID) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            contentPadding: EdgeInsets.only(top: 0.0),
+            content: Container(
+              width: 300.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    color: Color(0xFF0EB29A),
+                    child: Center(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                          child: new Icon(
+                            CustomIcons.relapsed,
+                            color: Color(0xFF0EB29A),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    child: Center(
+                      child: Text(
+                        "Sign out?",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(fontSize: 20, color: Color(0xFF000000)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Container(
+                      child: Text(
+                        "Quitting is hard we know, don't give up!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF000000).withOpacity(0.60),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  Container(
+                    width: 200,
+                    height: 30,
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.5),
+                      ),
+                      color: Color(0xFF0EB29A),
+                      child: Text(
+                        "Sign Out",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                      onPressed: () async {
+                        context.read<AuthenticationService>().signOut();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                  FlatButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF000000).withOpacity(0.50),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

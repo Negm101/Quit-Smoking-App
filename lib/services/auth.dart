@@ -83,7 +83,7 @@ class AuthenticationService {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   new CircularProgressIndicator(),
-                  new Text("Registering your account"),
+                  new Text("   Registering your account"),
                 ],
               ),
             ),

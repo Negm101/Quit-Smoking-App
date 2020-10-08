@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:quit_smoking_app/screens/custom_matrials.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MissionsContainerScreen extends StatefulWidget {
@@ -34,21 +33,11 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Container(
-                  child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection(FirebaseAuth.instance.currentUser.email)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) return const Text('loading..,');
-                        return ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          itemExtent: MediaQuery.of(context).size.height,
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) => CustomTiles(
-                            documentSnapshot: snapshot.data.documents[index],
-                          ),
-                        );
-                      }))
+                  margin: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width / 25,
+                      bottom: MediaQuery.of(context).size.height / 40,
+                      top: MediaQuery.of(context).size.height / 40),
+                  child: Text("Coming soon.."))
             ],
           ),
         ),
@@ -100,7 +89,7 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
               ),
             ),
             /* progress circle */
-            progressCircle(66),
+            progressCircle(0),
             /* total days + completed days*/
             Container(
               child: Column(
@@ -112,7 +101,7 @@ class _MissionsContainerState extends State<MissionsContainerScreen> {
                     style: TextStyle(fontSize: 10),
                   ),
                   Text(
-                    '20',
+                    '0',
                     style: TextStyle(
                         fontSize: 22,
                         color: Colors.blueAccent,
