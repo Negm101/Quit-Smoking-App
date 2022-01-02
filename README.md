@@ -22,3 +22,8 @@
   * Allow smokers to select missions. A reward is given when he or she completes the mission.
   * View Mission Accomplishment
   * View the accomplishment of the missions selected by the smoker.
+
+## Contributors 
+<a href="https://github.com/Negm101/Quit-Smoking-App/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Negm101/Quit-Smoking-App" />
+</a>
